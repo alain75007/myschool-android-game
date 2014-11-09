@@ -13,6 +13,8 @@ import android.widget.Toast;
 import com.myschool.game.core.Archer;
 import com.myschool.game.core.Character;
 
+import java.lang.reflect.InvocationTargetException;
+
 
 public class MainActivity extends Activity {
 
@@ -61,14 +63,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    public void onGoButtonClick(View view) throws IllegalAccessException, InstantiationException {
+    public void onGoButtonClick(View view) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        Character character = null;
         EditText editText = (EditText) findViewById(R.id.act_main_edit_character_name);
         String characterName;
         characterName = (String) editText.getText().toString();
         if (characterName.equals("")) {
             Toast.makeText(this, R.string.act_main_toast_missing_character_name, Toast.LENGTH_SHORT).show();
         } else {
-            Character character = (com.myschool.game.core.Character) selectedChar.newInstance();
+            character = (Character) selectedChar.getConstructor(String.class).newInstance(characterName);
+
+            //Character character = (com.myschool.game.core.Character) selectedChar.newInstance();
             Init init = (Init) this.getApplication();
             init.setCharacter(character);
             Intent intent = new Intent(this, GameActivity.class);
